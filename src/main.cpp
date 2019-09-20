@@ -13,7 +13,7 @@
 
 #include <MqttFunctions.h>
 #include <U8g2lib.h>
-// #include <DisplayFunctions.h>
+#include <DisplayFunctions.h>
 
 #include <BangBangController.h>
 #include <OnOffTheromostat.h>
@@ -171,12 +171,12 @@ void loop() {
   Debug.handle();
 
   for (uint8_t i = 0; i<N_OUTPUTPORT; i++) {
-    // heatcontrollers[i]->handle();
+    heatcontrollers[i]->handle();
   }
 
   INTERVAL(100) {
     if(display) {
-      // updateDisplay()
+      updateDisplay(u8g2,valvedriver,N_OUTPUTPORT);
     }
   }
 
