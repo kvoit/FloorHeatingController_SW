@@ -50,6 +50,13 @@ void setup() {
   pinMode(LED_PIN,OUTPUT);
   digitalWrite(LED_PIN,HIGH);
 
+   // Init shifty and ...
+  shifty.setBitCount(16);
+  shifty.setPins(OUTPUT_DATA_PIN, OUTPUT_CLOCK_PIN, OUTPUT_LATCH_PIN);
+  // ... switch all ports off
+  for (uint8_t i = 0; i<16; i++)
+    shifty.writeBit(i,LOW);
+
   for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
     valvedriver[i]     = new ShiftyValveDriver(shifty,OUTPUTPORT[i]);
     interfacedriver[i] = new OpenDrainInterfaceDriver(INTERFACE[i]);
@@ -64,13 +71,6 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println("Booting");
-
-  // Init shifty and ...
-  shifty.setBitCount(16);
-  shifty.setPins(OUTPUT_DATA_PIN, OUTPUT_CLOCK_PIN, OUTPUT_LATCH_PIN);
-  // ... switch all ports off
-  for (uint8_t i = 0; i<16; i++)
-    shifty.writeBit(i,LOW);
 
   display = beginDisplay(u8g2);
 
