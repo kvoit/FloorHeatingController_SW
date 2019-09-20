@@ -6,12 +6,12 @@
 
 class HeatingController {
     public:
-        HeatingController(ValveDriver &vd, Thermostat &t)
+        HeatingController(ValveDriver *vd, Thermostat *t)
             : vd(vd), t(t) {};
-        virtual void handle() { t.handle(); vd.handle(); };
+        virtual void handle() { t->handle(); vd->handle(); };
 
     protected:
-        ValveDriver vd;
-        Thermostat t;
+        ValveDriver* vd;
+        Thermostat* t;
 };
 

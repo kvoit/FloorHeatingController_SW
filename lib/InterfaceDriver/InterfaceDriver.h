@@ -4,7 +4,7 @@
 
 class InterfaceDriver {
     public:
-        void handle(void) {};
-        virtual uint8_t digitalRead(void) { return 0; };
-        virtual void digitalWrite(uint8_t) {};
+        virtual void handle(void) {};
+        virtual uint8_t digitalRead(void)=0;
+        virtual void digitalWrite(uint8_t)=0;
 };

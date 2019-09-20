@@ -4,5 +4,5 @@
 class Thermostat {
     public:
         virtual void handle(void) {};
-        virtual float getTemp() {return 0;};
+        virtual float getTemp()=0;
 };

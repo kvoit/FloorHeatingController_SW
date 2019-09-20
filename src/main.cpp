@@ -36,7 +36,7 @@ const unsigned long mqttReconnectInterval = 5000;
 ValveDriver       *valvedriver[N_OUTPUTPORT];
 InterfaceDriver   *interfacedriver[N_OUTPUTPORT];
 Thermostat        *thermostate[N_OUTPUTPORT];
-BangBangController *heatcontrollers[N_OUTPUTPORT];
+HeatingController *heatcontrollers[N_OUTPUTPORT];
 // //  = {
 // //   new BangBangController(*valvedriver[0],*thermostate[0], 20)
 // // };
@@ -51,8 +51,8 @@ void setup() {
   for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
     valvedriver[i]     = new ShiftyValveDriver(shifty,OUTPUTPORT[i]);
     interfacedriver[i] = new OpenDrainInterfaceDriver(INTERFACE[i]);
-    thermostate[i]     = new OnOffTheromostat(*interfacedriver[i],100,-100);
-    heatcontrollers[i] = new BangBangController(*valvedriver[i],*thermostate[i],20);
+    thermostate[i]     = new OnOffTheromostat(interfacedriver[i],100,-100);
+    heatcontrollers[i] = new BangBangController(valvedriver[i],thermostate[i],20);
   }
 
   // Set all interfaces to input
