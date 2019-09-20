@@ -1,16 +1,25 @@
+#include "BaseConfig.h"
+
 #include <WiFi.h>
-#include <ESPmDNS.h>
 #include <WiFiUdp.h>
+#include <ESPmDNS.h>
+#include <SPI.h>
+
 #include <ArduinoOTA.h>
 #include <RemoteDebug.h> 
 #include <Shifty.h>
 #include <INTERVAL.h>
 #include <PubSubClient.h>
-//#include <ESPTools.h>
-#include "BaseConfig.h"
-#include <U8g2lib.h>
-#include <SPI.h>
+
 #include <MqttFunctions.h>
+#include <U8g2lib.h>
+// #include <DisplayFunctions.h>
+
+#include <BangBangController.h>
+#include <OnOffTheromostat.h>
+#include <ShiftyValveDriver.h>
+#include <OpenDrainInterfaceDriver.h>
+
 #include "pins.h"
 
 Shifty shifty;
@@ -23,59 +32,28 @@ WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 const unsigned long mqttReconnectInterval = 5000;
 
+// ShiftyValveDriver sd(shifty,OUTPUTPORT[0]);
+ValveDriver       *valvedriver[N_OUTPUTPORT];
+InterfaceDriver   *interfacedriver[N_OUTPUTPORT];
+Thermostat        *thermostate[N_OUTPUTPORT];
+BangBangController *heatcontrollers[N_OUTPUTPORT];
+// //  = {
+// //   new BangBangController(*valvedriver[0],*thermostate[0], 20)
+// // };
+
 boolean display = true;
 
-void writeOutput(uint8_t pin, uint8_t value) {
-  rdebugDln("Writing GPIO %d to %d",INTERFACE[pin],value);
-  if(value == LOW) {
-    digitalWrite(INTERFACE[pin],LOW);
-    pinMode(INTERFACE[pin],OUTPUT);
-    digitalWrite(INTERFACE[pin],LOW);
-  } else {
-    pinMode(INTERFACE[pin],INPUT);
-  }
-}
-
-void setPort(uint8_t pin, uint8_t value) {
-  rdebugDln("Setting port %d (%d) to %d",pin,OUTPUTPORT[pin],value);
-  shifty.writeBit(OUTPUTPORT[pin], value);
-}
-
-void reactInterfaceChange(uint8_t pin,uint8_t value) {
-  uint8_t i;
-  for(i=0;i<N_INTERFACE;i++) {
-    if(pin == INTERFACE[i])
-      break;
-  }
-  if(display) {
-    u8g2.setColorIndex(value);
-    u8g2.drawBox(1+6*i,59,4,4);
-    u8g2.setColorIndex(1);
-  }
-  setPort(i,!value);
-}
-
-void checkInterfaces() {
-  uint8_t state;
-  if(display)
-  {
-    u8g2.setColorIndex(0);
-    u8g2.drawBox(0,21,128,10);
-    u8g2.setColorIndex(1);
-  }
-  for(uint8_t i=0;i<N_INTERFACE;i++) {
-    state = digitalRead(INTERFACE[i]);
-    if(state!=interface_state[i]) {
-      interface_state[i] = state,
-      reactInterfaceChange(INTERFACE[i],state);
-    }
-  }
-  u8g2.sendBuffer();
-}
 
 void setup() {
   pinMode(LED_PIN,OUTPUT);
   digitalWrite(LED_PIN,HIGH);
+
+  for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
+    valvedriver[i]     = new ShiftyValveDriver(shifty,OUTPUTPORT[i]);
+    interfacedriver[i] = new OpenDrainInterfaceDriver(INTERFACE[i]);
+    thermostate[i]     = new OnOffTheromostat(*interfacedriver[i],100,-100);
+    heatcontrollers[i] = new BangBangController(*valvedriver[i],*thermostate[i],20);
+  }
 
   // Set all interfaces to input
   for (uint8_t i=0;i<N_INTERFACE;i++) {
@@ -191,8 +169,15 @@ void loop() {
   // Handle background services
   ArduinoOTA.handle();
   Debug.handle();
+
+  for (uint8_t i = 0; i<N_OUTPUTPORT; i++) {
+    // heatcontrollers[i]->handle();
+  }
+
   INTERVAL(100) {
-    checkInterfaces();
+    if(display) {
+      // updateDisplay()
+    }
   }
 
   INTERVAL(1000) {

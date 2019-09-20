@@ -1,15 +1,13 @@
 #pragma once
 
-#include <WiFi.h>
+#include <Arduino.h>
 
-const uint8_t N_INTERFACE = 10;
-const uint8_t INTERFACE[N_INTERFACE] = { 32,  33,  22,  4,   16,  17,  5,   18,  19,  21  };
-uint8_t interface_state[N_INTERFACE] = { LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW };
+const uint8_t INTERFACE[] = { 32,  33,  22,  4,   16,  17,  5,   18,  19,  21  };
+const uint8_t N_INTERFACE = sizeof(INTERFACE)/sizeof(INTERFACE[0]);
 
-uint8_t id = 0;
-uint8_t OUTPUTSTATE = LOW;
-const uint8_t N_OUTPUTPORT = 10;
-const uint8_t OUTPUTPORT[N_OUTPUTPORT] = { 8, 9, 10, 11, 12, 13, 14, 15, 0, 1 };
+
+const uint8_t OUTPUTPORT[] = { 8, 9, 10, 11, 12, 13, 14, 15, 0, 1 };
+const uint8_t N_OUTPUTPORT = sizeof(OUTPUTPORT)/sizeof(OUTPUTPORT[0]);
 
 const uint8_t LED_PIN = 23;
 
