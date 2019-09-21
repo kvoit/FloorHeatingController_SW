@@ -6,8 +6,7 @@ boolean beginDisplay(U8G2 &u8g2) {
     Serial.println("Started LCD");
     u8g2.clearBuffer();          // clear the internal memory
     u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
-    u8g2.drawStr(0,10,"Starting PIO ...");  // write something to the internal memory
-    u8g2.drawBox(0,58,60,6);
+    u8g2.drawStr(0,10,"Starting ...");  // write something to the internal memory
     u8g2.sendBuffer();          // transfer internal memory to the display
 
     return true;

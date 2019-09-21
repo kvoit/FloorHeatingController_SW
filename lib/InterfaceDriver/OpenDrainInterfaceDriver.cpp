@@ -1,7 +1,12 @@
 #include <OpenDrainInterfaceDriver.h>
 
+#include <RemoteDebug.h>
+extern RemoteDebug Debug;
+
 uint8_t OpenDrainInterfaceDriver::digitalRead(void) {
-    return ::digitalRead(pin);
+    uint8_t pin_value = ::digitalRead(pin);
+    debugV("Pin value read to %d", pin_value);
+    return pin_value;
 }
 
 void OpenDrainInterfaceDriver::digitalWrite(uint8_t value){
