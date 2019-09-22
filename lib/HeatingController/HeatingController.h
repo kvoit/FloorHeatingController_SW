@@ -6,12 +6,15 @@
 
 class HeatingController {
     public:
-        HeatingController(ValveDriver *vd, Thermostat *t)
-            : vd(vd), t(t) {};
-        virtual void handle() { t->handle(); vd->handle(); };
+    HeatingController(ValveDriver *vd, Thermostat *t)
+        : vd(vd), t(t) {}
+    virtual void handle();
+    virtual void setEnabled(boolean enabled);
+    virtual boolean isEnabled(void) { return this->enabled; }
 
     protected:
-        ValveDriver* vd;
-        Thermostat* t;
+    boolean enabled = true;
+    ValveDriver* vd;
+    Thermostat* t;
 };
 

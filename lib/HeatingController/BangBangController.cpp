@@ -4,6 +4,11 @@
 extern RemoteDebug Debug;
 
 void BangBangController::handle() {
+    HeatingController::handle();
+
+    if(!enabled)
+        return;
+
     float temp = t->getTemp();
     if(vd->getState() && temp>switch_temp) {
         vd->setState(0);
