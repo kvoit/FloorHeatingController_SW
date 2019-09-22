@@ -12,6 +12,7 @@
 #include <MqttFunctions.h>
 #include <RemoteDebugFunctions.h>
 #include <DisplayFunctions.h>
+#include <ControllerConfig.h>
 
 #include <BangBangController.h>
 #include <OnOffTheromostat.h>
@@ -96,6 +97,8 @@ void setup() {
     thermostate[i]     = new OnOffTheromostat(interfacedriver[i],100,-100);
     heatcontrollers[i] = new BangBangController(valvedriver[i],thermostate[i],20);
   }
+
+  configControllers();
 }
 
 void loop() {
