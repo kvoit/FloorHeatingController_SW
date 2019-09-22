@@ -104,10 +104,9 @@ void loop() {
   Debug.handle();
   
   // Handle heat controllers
-  INTERVAL(1000) {
-    for (uint8_t i = 0; i<N_OUTPUTPORT; i++) {
+  INTERVAL(100) {
+    for (uint8_t i = 0; i<N_OUTPUTPORT; i++) { //N_OUTPUTPORT
       heatcontrollers[i]->handle();
-      debugV("Handling heatcontroller %d",i);
     }
   }
 
