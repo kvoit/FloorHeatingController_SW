@@ -75,7 +75,7 @@ void setup() {
   }
 
   u8g2.clearBuffer();          // clear the internal memory
-  u8g2.drawBox(0,58,60,6);
+  u8g2.drawBox(0,51,128,13);
   if(display) {
     u8g2.drawStr(0,10,"Wifi:");
     u8g2.drawStr(50,10,WiFi.localIP().toString().c_str());
@@ -91,13 +91,6 @@ void setup() {
   beginRemoteDebug(device_name);
 
   // Configure periphery drivers and heating controllers
-  for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
-    valvedriver[i]     = new ShiftyValveDriver(shifty,OUTPUTPORT[i]);
-    interfacedriver[i] = new OpenDrainInterfaceDriver(INTERFACE[i]);
-    thermostate[i]     = new OnOffTheromostat(interfacedriver[i],100,-100);
-    heatcontrollers[i] = new BangBangController(valvedriver[i],thermostate[i],20);
-  }
-
   configControllers();
 }
 
@@ -116,7 +109,7 @@ void loop() {
   // Read interfaces and print status to display
   INTERVAL(100) {
     if(display) {
-      updateDisplay(u8g2,valvedriver,N_OUTPUTPORT);
+      updateDisplay(u8g2,valvedriver,N_OUTPUTPORT,heatcontrollers,N_OUTPUTPORT);
     }
   }
 

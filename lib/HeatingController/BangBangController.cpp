@@ -9,13 +9,13 @@ void BangBangController::handle() {
     if(!enabled)
         return;
 
-    float temp = t->getTemp();
-    if(vd->getState() && temp>switch_temp) {
+    float th_temp = t->getTemp();
+    if(vd->getState() && th_temp>temp) {
         vd->setState(0);
-        debugD("Set valve change to 0 because temp changed to %.1f",temp);
-    } else if(!vd->getState() && temp<switch_temp-hysteresis) {
+        debugD("Set valve change to 0 because temp changed to %.1f",th_temp);
+    } else if(!vd->getState() && th_temp<temp-hysteresis) {
         vd->setState(1);
-        debugD("Set valve change to 1 because temp changed to %.1f",temp);
+        debugD("Set valve change to 1 because temp changed to %.1f",th_temp);
     } else {
         // debugV("No valve change, temp at %.1f",temp);
     }
