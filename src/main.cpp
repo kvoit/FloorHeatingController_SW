@@ -32,8 +32,8 @@ PubSubClient mqttclient(espClient);
 const unsigned long mqttReconnectInterval = 5000;
 
 ValveDriver       *valvedriver[N_OUTPUTPORT];
-InterfaceDriver   *interfacedriver[N_OUTPUTPORT];
-Thermostat        *thermostate[N_OUTPUTPORT];
+InterfaceDriver   *interfacedriver[N_INTERFACE];
+Thermostat        *thermostate[N_INTERFACE];
 HeatingController *heatcontrollers[N_OUTPUTPORT];
 
 uint8_t n_heatcontroller = 0;

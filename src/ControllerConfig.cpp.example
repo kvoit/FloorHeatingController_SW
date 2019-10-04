@@ -7,11 +7,11 @@ extern HeatingController *heatcontrollers[];
 extern Shifty shifty;
 
 void configControllers() {
-    for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
+    for(uint8_t i=0;i<N_INTERFACE;i++) {
         interfacedriver[i] = new OpenDrainInterfaceDriver(INTERFACE[i]);
     }
 
-    for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
+    for(uint8_t i=0;i<N_INTERFACE;i++) {
         thermostate[i]     = new OnOffTheromostat(interfacedriver[i],100,-100);
     }
 
@@ -19,9 +19,8 @@ void configControllers() {
         valvedriver[i]     = new ShiftyValveDriver(shifty,OUTPUTPORT[i]);
     }
  
-    for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
-        heatcontrollers[i] = new BangBangController(valvedriver[i],thermostate[i],20);
-    }
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[0],900000,64),thermostate[1],20);
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[8],900000,64),thermostate[0],20);
 
     return;
 }
