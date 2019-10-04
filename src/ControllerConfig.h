@@ -1,3 +1,5 @@
+#pragma once
+
 #include <pins.h>
 #include <BangBangController.h>
 #include <OnOffTheromostat.h>

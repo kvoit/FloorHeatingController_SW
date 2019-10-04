@@ -36,6 +36,8 @@ InterfaceDriver   *interfacedriver[N_OUTPUTPORT];
 Thermostat        *thermostate[N_OUTPUTPORT];
 HeatingController *heatcontrollers[N_OUTPUTPORT];
 
+uint8_t n_heatcontroller = 0;
+
 boolean display = true;
 
 
@@ -101,20 +103,25 @@ void loop() {
   
   // Handle heat controllers
   INTERVAL(100) {
-    for (uint8_t i = 0; i<N_OUTPUTPORT; i++) { //N_OUTPUTPORT
+    for (uint8_t i = 0; i<2; i++) { //N_OUTPUTPORT
+      debugV("main: Handling controller %d",i);
       heatcontrollers[i]->handle();
     }
   }
 
-  // Read interfaces and print status to display
+  //Read interfaces and print status to display
   INTERVAL(100) {
     if(display) {
-      updateDisplay(u8g2,valvedriver,N_OUTPUTPORT,heatcontrollers,N_OUTPUTPORT);
+      updateDisplay(u8g2,valvedriver,N_OUTPUTPORT,heatcontrollers,n_heatcontroller);
     }
   }
 
   // Flash LED
   INTERVAL(1000) {
     digitalWrite(LED_PIN,!digitalRead(LED_PIN));
+  }
+
+  INTERVAL(60000) {
+    debugI("Running millis: %d",millis());
   }
 }

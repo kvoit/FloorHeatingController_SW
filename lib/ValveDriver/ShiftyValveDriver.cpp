@@ -1,5 +1,8 @@
 #include <ShiftyValveDriver.h>
 
+#include<RemoteDebug.h>
+extern RemoteDebug Debug;
+
 uint8_t ShiftyValveDriver::getState(void) {
     return state;
 };

@@ -24,7 +24,7 @@ boolean beginDisplay(U8G2 &u8g2) {
 }
 
 void updateDisplay(U8G2 &u8g2, ValveDriver *valvedriver[], uint8_t n_valvedriver, HeatingController *heatingcontroller[], uint8_t n_heatingcontroller) {
-  for(uint8_t i=0;i<n_valvedriver;i++) {
+  for(uint8_t i=0;i<n_heatingcontroller;i++) {
     u8g2.setColorIndex(heatingcontroller[i]->isEnabled());
     u8g2.drawBox(1+6*i,52,4,4);
   }
