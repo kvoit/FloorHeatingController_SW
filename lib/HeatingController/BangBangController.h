@@ -4,10 +4,8 @@
 
 class BangBangController : public HeatingController {
     public:
-        BangBangController(ValveDriver *vd, Thermostat *t, float temp, float hysteresis)
+        BangBangController(ValveDriver *vd, Thermostat *t, float temp, float hysteresis=2)
             : HeatingController(vd,t,temp), hysteresis(hysteresis) {};
-        BangBangController(ValveDriver *vd, Thermostat *t, float temp)
-            : BangBangController(vd,t,temp,3) {};
 
         virtual void handle();
 

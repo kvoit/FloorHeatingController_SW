@@ -10,6 +10,7 @@
 #include <NetworkFunctions.h>
 #include <OTAFunctions.h>
 #include <MqttFunctions.h>
+#include <MqttController.hpp>
 #include <RemoteDebugFunctions.h>
 #include <DisplayFunctions.h>
 #include <ControllerConfig.h>
@@ -28,18 +29,18 @@ U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /* clock=*/ OUTPUT_CLOCK_PIN /* A4 */ 
 RemoteDebug Debug;
 
 WiFiClient espClient;
-PubSubClient mqttclient(espClient);
-const unsigned long mqttReconnectInterval = 5000;
 
 ValveDriver       *valvedriver[N_OUTPUTPORT];
 InterfaceDriver   *interfacedriver[N_INTERFACE];
 Thermostat        *thermostate[N_INTERFACE];
 HeatingController *heatcontrollers[N_OUTPUTPORT];
-
 uint8_t n_heatcontroller = 0;
 
 boolean display = true;
 
+PubSubClient pubsubclient(mqtt_server, 1883, espClient);
+MqttController mqtt_controller(&pubsubclient,device_name,mqtt_user,mqtt_pw);
+void mqtt_callback_func(const char* topic, const byte* payload, unsigned int length) { mqtt_controller.callback(topic, payload,length); }
 
 void setup() {
   Serial.begin(115200);
@@ -87,6 +88,7 @@ void setup() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  pubsubclient.setCallback(mqtt_callback_func);
 
   // Start network services
   startOTA(device_name, ota_password);
@@ -100,10 +102,11 @@ void loop() {
   // Handle background services
   ArduinoOTA.handle();
   Debug.handle();
+  mqtt_controller.handle();
   
   // Handle heat controllers
   INTERVAL(100) {
-    for (uint8_t i = 0; i<2; i++) { //N_OUTPUTPORT
+    for (uint8_t i = 0; i<n_heatcontroller; i++) {
       debugV("main: Handling controller %d",i);
       heatcontrollers[i]->handle();
     }

@@ -6,5 +6,7 @@
 #include <ShiftyValveDriver.h>
 #include <OpenDrainInterfaceDriver.h>
 #include <PWMValveDriverDecorator.hpp>
+#include <MqttController.hpp>
+#include <MqttThermostat.hpp>
 
 void configControllers(void);

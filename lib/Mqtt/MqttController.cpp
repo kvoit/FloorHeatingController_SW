@@ -1,37 +1,50 @@
-#include <MqttController.h>
+#include <MqttController.hpp>
 
+#include <RemoteDebug.h>
 extern RemoteDebug Debug;
 
-void MqttController::begin() {}
+void MqttController::begin() {
+  
+}
 
-bool MqttController::parsePayload(const char *payload) {
-    if ( !strcmp(payload, "ON") )
-    {
-        hc->setEnabled(1);
-        return true;
+void MqttController::handle() {
+    if (!psc->connected()) {
+        reconnect();
     }
-    else if ( !strcmp(payload, "OFF") )
-    {
-        hc->setEnabled(0);
-        return true;
-    }
-    else
-    {
-        if(strlen(payload)<6) //Cannot contain TEMP command
-            return false;
-        if(strstr(payload, "TEMP") == NULL)
-            return false;
+    psc->loop();
+}
 
-        float set_temp = atof(&payload[5]);
-        hc->setTemp(set_temp);
+void MqttController::reg(MqttListener* ml) {
+  listener.push_back(ml);
+}
+
+bool MqttController::reconnect() {
+    if (psc->connect(mqttName, mqttUser, mqttPassword)) {
+        for(MqttListener* ml : listener) {
+            psc->subscribe(ml->getMQTTTopic());
+        }
+        return true;
     }
     return false;
 }
 
-void MqttController::getMQTTStateTopic(char *topicstr) {
+void MqttController::callback(const char* topic, const byte* payload, unsigned int length) {
+  debugD("MQTT msg received in %s",topic);
+    // Make const char* from byte*
+  char p_payload[length + 1];
+  for (int i = 0; i < length; i++)
+  {
+    p_payload[i] = payload[i];
+  }
+  p_payload[length] = '\0';
 
-}
-
-void MqttController::getMQTTCommandTopic(char *topicstr) {
-
+  for (MqttListener* ml : listener)
+  {
+    if (!strcmp(ml->getMQTTTopic(), topic))
+    {
+      debugD("MQTT msg matched with listener");
+      if(ml->parsePayload(p_payload))
+        return;
+    }
+  }
 }
