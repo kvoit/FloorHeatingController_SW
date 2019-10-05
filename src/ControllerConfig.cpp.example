@@ -5,8 +5,33 @@ extern InterfaceDriver   *interfacedriver[];
 extern Thermostat        *thermostate[];
 extern HeatingController *heatcontrollers[];
 extern Shifty shifty;
+extern MqttController mqtt_controller;
+
+extern uint8_t n_heatcontroller;
 
 void configControllers() {
+    /* INTERFACES 
+        0   Bath
+        1   Kid
+        2   Livingroom
+        3   Office
+        4   Bedroom
+        5   Shower
+    */
+
+    /* OUTPUTS   
+        0   Kid
+        1   Office
+        2   Dining room
+        3   Living room
+        4   Corridor
+        5   Guests
+        6   Bed room
+        7   Shower
+        8   Bath
+    */
+    
+    // Configure periphery drivers and heating controllers
     for(uint8_t i=0;i<N_INTERFACE;i++) {
         interfacedriver[i] = new OpenDrainInterfaceDriver(INTERFACE[i]);
     }
@@ -16,11 +41,20 @@ void configControllers() {
     }
 
     for(uint8_t i=0;i<N_OUTPUTPORT;i++) {
-        valvedriver[i]     = new ShiftyValveDriver(shifty,OUTPUTPORT[i]);
+        valvedriver[i]     = new ShiftyValveDriver(&shifty,OUTPUTPORT[i]);
     }
- 
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[0],900000,64),thermostate[1],20);
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[8],900000,64),thermostate[0],20);
+    
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[0],900000,128),thermostate[1],20); // Kid
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[1],900000,128),thermostate[3],20); // Office
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[2],900000,128),thermostate[2],20); // Bedroom
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[3],900000,128),thermostate[2],20); // Living room
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[4],900000,128),thermostate[2],20); // Corridor
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[5],900000,128),                    // Guests
+        new MqttThermostat(&mqtt_controller,"home-uk/guestroom/thermostat/temp"),19);
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[6],900000,128),                    // Bedroom
+        new MqttJsonThermostat(&mqtt_controller,"home-uk/zigbee2mqtt/UK_WE2_Bedroom_AqaraTemperature"),19);
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[7],900000,128),thermostate[5],20); // Shower
+    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[8],900000,128),thermostate[0],20); // Bath
 
     return;
 }
