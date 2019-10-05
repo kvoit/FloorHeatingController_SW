@@ -21,7 +21,8 @@ void MqttController::reg(MqttListener* ml) {
 bool MqttController::reconnect() {
     if (psc->connect(mqttName, mqttUser, mqttPassword)) {
         for(MqttListener* ml : listener) {
-            psc->subscribe(ml->getMQTTTopic());
+            bool subsc_stat = psc->subscribe(ml->getMQTTTopic());
+            debugD("Subscribing to %s (%d)",ml->getMQTTTopic(),subsc_stat);
         }
         return true;
     }

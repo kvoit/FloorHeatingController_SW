@@ -8,5 +8,6 @@
 #include <PWMValveDriverDecorator.hpp>
 #include <MqttController.hpp>
 #include <MqttThermostat.hpp>
+#include <MqttJsonThermostat.hpp>
 
 void configControllers(void);

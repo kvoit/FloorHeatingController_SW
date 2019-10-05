@@ -94,6 +94,15 @@ void setup() {
   startOTA(device_name, ota_password);
   beginRemoteDebug(device_name);
 
+  // Wait for debug connections
+  while(millis()<10000) {
+    ArduinoOTA.handle();
+    Debug.handle();
+    INTERVAL(1000) {
+      debugI("Initial wait %d",millis());
+    }
+  }
+
   // Configure periphery drivers and heating controllers
   configControllers();
 }
