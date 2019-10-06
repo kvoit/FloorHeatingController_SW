@@ -10,7 +10,7 @@ const char *mqtt_server     = "";
 const char *mqtt_user       = "";
 const char *mqtt_pw         = "";
 #define MQTT_TOPIC_BASE "home/heating/"
-#define MQTT_MAX_PACKET_SIZE 256 // Does not seem to work. See platformio.ini build_flags to set this value
+//#define MQTT_MAX_PACKET_SIZE 256 // Does not seem to work. See platformio.ini build_flags to set this value
 
 const char *timezone        = "WEST-1DWEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
 const char *ntpserver        = "de.pool.ntp.org";

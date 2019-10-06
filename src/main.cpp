@@ -1,9 +1,9 @@
-#include "BaseConfig.h"
-
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <SPI.h>
- 
+
+#include "BaseConfig.h"
+
 #include <Shifty.h>
 #include <INTERVAL.h>
 
@@ -12,6 +12,7 @@
 #include <MqttFunctions.h>
 #include <MqttController.hpp>
 #include <RemoteDebugFunctions.h>
+#include <TimeFunctions.hpp>
 #include <DisplayFunctions.h>
 #include <ControllerConfig.h>
 
@@ -23,6 +24,8 @@
 #include "pins.h"
 
 Shifty shifty;
+
+struct tm timeinfo;
 
 U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /* clock=*/ OUTPUT_CLOCK_PIN /* A4 */ , /* data=*/ OUTPUT_DATA_PIN /* A2 */, /* CS=*/ 26 /* A3 */, /* reset=*/ 27);
 
@@ -103,6 +106,8 @@ void setup() {
     }
   }
 
+  updateNTP(gmtOffset_sec, dlsOffset_sec, ntpserver);
+
   // Configure periphery drivers and heating controllers
   configControllers();
 }
@@ -122,7 +127,7 @@ void loop() {
   }
 
   //Read interfaces and print status to display
-  INTERVAL(100) {
+  INTERVAL(1000) {
     if(display) {
       updateDisplay(u8g2,valvedriver,N_OUTPUTPORT,heatcontrollers,n_heatcontroller);
     }
@@ -134,6 +139,10 @@ void loop() {
   }
 
   INTERVAL(60000) {
-    debugI("Running millis: %d",millis());
+    printLocalTime();
+  }
+
+  INTERVAL(24*3600000) {
+    updateNTP(gmtOffset_sec, dlsOffset_sec, ntpserver);
   }
 }

@@ -27,7 +27,6 @@ class TheromostatMaxDecorator : public Thermostat {
 
         if(millis()-last_retain > retain_interval/10) {
             last_retain = millis();
-            debugD("Read %f, but returning %f (%f, %f, %f, %f, %f, %f, %f)",t->getTemp(),this->getTemp(),temp_history[0],temp_history[1],temp_history[2],temp_history[3],temp_history[4],temp_history[5],temp_history[6]);
             temp_history[i_temp_history] = t->getTemp();
             i_temp_history = (i_temp_history+1)%n_temp_history;
         }
