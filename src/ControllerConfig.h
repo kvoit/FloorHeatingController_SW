@@ -9,5 +9,6 @@
 #include <MqttController.hpp>
 #include <MqttThermostat.hpp>
 #include <MqttJsonThermostat.hpp>
+#include <ThermostatMaxDecorator.hpp>
 
 void configControllers(void);
