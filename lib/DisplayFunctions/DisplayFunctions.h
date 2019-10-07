@@ -4,7 +4,7 @@
 #include <U8g2lib.h>
 #include <ValveDriver.h>
 #include <HeatingController.h>
-#include <TimeFunctions.hpp>
+#include <globalTimeinfo.h>
 
 boolean beginDisplay(U8G2 &u8g2);
 

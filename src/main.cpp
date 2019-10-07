@@ -25,8 +25,6 @@
 
 Shifty shifty;
 
-struct tm timeinfo;
-
 U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /* clock=*/ OUTPUT_CLOCK_PIN /* A4 */ , /* data=*/ OUTPUT_DATA_PIN /* A2 */, /* CS=*/ 26 /* A3 */, /* reset=*/ 27);
 
 RemoteDebug Debug;
