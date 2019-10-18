@@ -25,7 +25,9 @@
 
 Shifty shifty;
 
+SPIClass SPI1(HSPI);
 U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /* clock=*/ OUTPUT_CLOCK_PIN /* A4 */ , /* data=*/ OUTPUT_DATA_PIN /* A2 */, /* CS=*/ 26 /* A3 */, /* reset=*/ 27);
+//U8G2_ST7920_128X64_F_2ND_HW_SPI u8g2(U8G2_R0, DISPLAY_CS_PIN, DISPLAY_RST_PIN);
 
 RemoteDebug Debug;
 

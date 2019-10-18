@@ -14,3 +14,6 @@ const uint8_t LED_PIN = 23;
 const uint8_t OUTPUT_CLOCK_PIN = 14;
 const uint8_t OUTPUT_DATA_PIN = 13;
 const uint8_t OUTPUT_LATCH_PIN = 25;
+
+const uint8_t DISPLAY_CS_PIN = 26;
+const uint8_t DISPLAY_RST_PIN = 27;
