@@ -4,8 +4,8 @@
 
 class BangBangController : public HeatingController {
     public:
-        BangBangController(ValveDriver *vd, Thermostat *t, float temp, float hysteresis=2)
-            : HeatingController(vd,t,temp), hysteresis(hysteresis) {};
+        BangBangController(const char* name, ValveDriver &vd, Thermostat &t, float temp, float hysteresis=2)
+            : HeatingController(name, vd,t,temp), hysteresis(hysteresis) {};
 
         virtual void handle();
 

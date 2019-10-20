@@ -5,14 +5,18 @@ extern RemoteDebug Debug;
 
 void HeatingController::handle() { 
     if(enabled) {
-        t->handle(); 
+        t.handle(); 
         debugV("[Heating controller] Handle valve controller");
-        vd->handle();
+        vd.handle();
     } 
 }
 
 void HeatingController::setEnabled(boolean enabled) { 
     debugD("Setting heating controller status to %d",enabled);
-    vd->setState(0);
+    vd.setState(0);
+
     this->enabled = enabled; 
+
+    if(listener!=0)
+        listener->setEnabled(enabled);
 }

@@ -42,7 +42,7 @@ uint8_t n_heatcontroller = 0;
 boolean display = true;
 
 PubSubClient pubsubclient(mqtt_server, 1883, espClient);
-MqttController mqtt_controller(&pubsubclient,device_name,mqtt_user,mqtt_pw);
+MqttController mqtt_controller(pubsubclient,device_name,mqtt_user,mqtt_pw);
 void mqtt_callback_func(const char* topic, const byte* payload, unsigned int length) { mqtt_controller.callback(topic, payload,length); }
 
 void setup() {
@@ -102,7 +102,7 @@ void setup() {
     ArduinoOTA.handle();
     Debug.handle();
     INTERVAL(1000) {
-      debugI("Initial wait %d",millis());
+      debugI("Initial wait %lu",millis());
     }
   }
 

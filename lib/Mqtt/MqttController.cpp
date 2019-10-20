@@ -8,10 +8,10 @@ void MqttController::begin() {
 }
 
 void MqttController::handle() {
-    if (!psc->connected()) {
+    if (!psc.connected()) {
         reconnect();
     }
-    psc->loop();
+    psc.loop();
 }
 
 void MqttController::reg(MqttListener* ml) {
@@ -19,9 +19,9 @@ void MqttController::reg(MqttListener* ml) {
 }
 
 bool MqttController::reconnect() {
-    if (psc->connect(mqttName, mqttUser, mqttPassword)) {
+    if (psc.connect(mqttName, mqttUser, mqttPassword)) {
         for(MqttListener* ml : listener) {
-            bool subsc_stat = psc->subscribe(ml->getMQTTTopic());
+            bool subsc_stat = psc.subscribe(ml->getMQTTTopic());
             debugD("Subscribing to %s (%d)",ml->getMQTTTopic(),subsc_stat);
         }
         return true;
@@ -48,4 +48,13 @@ void MqttController::callback(const char* topic, const byte* payload, unsigned i
         return;
     }
   }
+}
+
+bool MqttController::sendMessage(const char* topic, const char* msg, bool retain) {
+  if(!psc.publish(topic, msg, retain))
+  {
+    debugE("Failed to send MQTT message %s to topic %s.",topic,msg);
+    return false;
+  }
+  return true;
 }

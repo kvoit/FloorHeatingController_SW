@@ -5,7 +5,7 @@
 class PWMValveDriverDecorator : public AnalogValveDriver
 {
     public:
-    PWMValveDriverDecorator(ValveDriver* vd, uint32_t pwm_period=3600000, uint8_t on_level=255, uint8_t off_level=0, uint8_t current_level=0, uint32_t offset=0) 
+    PWMValveDriverDecorator(ValveDriver &vd, uint32_t pwm_period=3600000, uint8_t on_level=255, uint8_t off_level=0, uint8_t current_level=0, uint32_t offset=0) 
     : vd(vd), pwm_period(pwm_period), pwm_level(current_level), on_level(on_level), off_level(off_level) {
         last_on = millis()-offset;
     };
@@ -19,7 +19,7 @@ class PWMValveDriverDecorator : public AnalogValveDriver
     virtual void handle(void);
 
     protected:
-    ValveDriver *vd;
+    ValveDriver &vd;
 
     const uint32_t pwm_period;
     uint8_t pwm_level;

@@ -44,21 +44,21 @@ void configControllers() {
         valvedriver[i]     = new ShiftyValveDriver(&shifty,OUTPUTPORT[i]);
     }
     
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[0],900000,128),thermostate[1],20); // Kid
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[1],900000,128),thermostate[3],20); // Office
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[2],900000,128),thermostate[2],20); // Bedroom
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[3],900000,128),thermostate[2],20); // Living room
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[4],900000,128),thermostate[2],20); // Corridor
-     heatcontrollers[n_heatcontroller++] = new BangBangController(                                                                          // Guest
-        new PWMValveDriverDecorator(valvedriver[5],900000,128),                                                                         // PWM the valve to half the duty cycle
-        new TheromostatMaxDecorator<30>(new MqttThermostat(&mqtt_controller,"home-uk/guestroom/thermostat/temp"), 120000),              // Take the max of the last 30 values taken every 2 minutes, to avoid increased heating during short ventilation
+    heatcontrollers[n_heatcontroller++] = new BangBangController("1", *new PWMValveDriverDecorator(*valvedriver[0],900000,128),*thermostate[1],20); // Kid
+    heatcontrollers[n_heatcontroller++] = new BangBangController("2", *new PWMValveDriverDecorator(*valvedriver[1],900000,128),*thermostate[3],20); // Office
+    heatcontrollers[n_heatcontroller++] = new BangBangController("3", *new PWMValveDriverDecorator(*valvedriver[2],900000,128),*thermostate[2],20); // Bedroom
+    heatcontrollers[n_heatcontroller++] = new BangBangController("4", *new PWMValveDriverDecorator(*valvedriver[3],900000,128),*thermostate[2],20); // Living room
+    heatcontrollers[n_heatcontroller++] = new BangBangController("5", *new PWMValveDriverDecorator(*valvedriver[4],900000,128),*thermostate[2],20); // Corridor
+     heatcontrollers[n_heatcontroller++] = new BangBangController("6",                                                                           // Guest
+        *new PWMValveDriverDecorator(valvedriver[5],900000,128),                                                                         // PWM the valve to half the duty cycle
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(&mqtt_controller,"home-uk/guestroom/thermostat/temp"), 120000),              // Take the max of the last 30 values taken every 2 minutes, to avoid increased heating during short ventilation
         19);
-    heatcontrollers[n_heatcontroller++] = new BangBangController(                                                                           // Bedroom
-        new PWMValveDriverDecorator(valvedriver[6],900000,128),                    
-        new TheromostatMaxDecorator<30>(new MqttJsonThermostat(&mqtt_controller,"home-uk/zigbee2mqtt/UK_WE2_Bedroom_AqaraTemperature"), 120000),
+    heatcontrollers[n_heatcontroller++] = new BangBangController("7",                                                                            // Bedroom
+        *new PWMValveDriverDecorator(valvedriver[6],900000,128),                    
+        *new TheromostatMaxDecorator<30>(new MqttJsonThermostat(&mqtt_controller,"home-uk/zigbee2mqtt/UK_WE2_Bedroom_AqaraTemperature"), 120000),
         19);
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[7],900000,128),thermostate[5],20); // Shower
-    heatcontrollers[n_heatcontroller++] = new BangBangController(new PWMValveDriverDecorator(valvedriver[8],900000,128),thermostate[0],20); // Bath
+    heatcontrollers[n_heatcontroller++] = new BangBangController("8", *new PWMValveDriverDecorator(*valvedriver[7],900000,128),*thermostate[5],20); // Shower
+    heatcontrollers[n_heatcontroller++] = new BangBangController("9", *new PWMValveDriverDecorator(*valvedriver[8],900000,128),*thermostate[0],20); // Bath
 
     return;
 }
