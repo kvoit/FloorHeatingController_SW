@@ -8,7 +8,8 @@
 class HeatingController {
     public:
     HeatingController(const char* name, ValveDriver &vd, Thermostat &t, float temp)
-        : name(name), vd(vd), t(t), temp(temp) {}
+        : name(name), vd(vd), t(t), temp(temp) {
+    }
     virtual void handle();
     virtual void setEnabled(boolean enabled);
     virtual boolean isEnabled(void) { return this->enabled; }
@@ -24,6 +25,6 @@ class HeatingController {
     Thermostat& t;
     float temp;
     boolean enabled = true;
-    HeatingControllerListener *listener;
+    HeatingControllerListener *listener = 0;
 };
 
