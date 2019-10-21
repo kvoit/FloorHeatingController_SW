@@ -81,7 +81,6 @@ void setup() {
   }
 
   u8g2.clearBuffer();          // clear the internal memory
-  u8g2.drawBox(0,51,128,13);
   if(display) {
     u8g2.drawStr(0,10,"Wifi:");
     u8g2.drawStr(50,10,WiFi.localIP().toString().c_str());

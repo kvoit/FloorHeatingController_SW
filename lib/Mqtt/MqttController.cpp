@@ -51,7 +51,8 @@ void MqttController::callback(const char* topic, const byte* payload, unsigned i
 }
 
 bool MqttController::sendMessage(const char* topic, const char* msg, bool retain) {
-  if( !psc.publish(topic, msg, retain))
+  this->handle();
+  if( !psc.publish(topic, msg, retain) )
   {
     debugE("Failed MQTT '%s'",msg);
     debugE("%s",topic);
@@ -61,4 +62,5 @@ bool MqttController::sendMessage(const char* topic, const char* msg, bool retain
     debugD("%s",topic);
     return true;
   }
+  this->handle();
 }

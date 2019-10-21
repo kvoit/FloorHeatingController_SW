@@ -17,6 +17,18 @@ void HeatingController::setEnabled(boolean enabled) {
 
     this->enabled = enabled; 
 
-    if(listener!=0)
+    if(listener!=0) {
+        listener->setEnabled(false);
         listener->setEnabled(enabled);
+    }
 }
+
+void HeatingController::setListener(HeatingControllerListener *l) {
+    listener = l; 
+
+    if(listener!=0) {
+        listener->setEnabled(this->isEnabled());
+        listener->setValveLevel(vd.getLevel());
+        listener->setValveState(vd.getState());
+    }
+};

@@ -41,9 +41,14 @@ void updateDisplay(U8G2 &u8g2, ValveDriver *valvedriver[], uint8_t n_valvedriver
   u8g2.setColorIndex(1);
   u8g2.drawStr(0,20,datestring);
   debugV("Drew time");
+  u8g2.drawBox(0,46,128,18);
   for(uint8_t i=0;i<n_heatingcontroller;i++) {
     u8g2.setColorIndex(heatingcontroller[i]->isEnabled());
-    u8g2.drawBox(1+6*i,52,4,4);
+    u8g2.drawBox(1+6*i,47,4,4);
+  }
+  for(uint8_t i=0;i<n_heatingcontroller;i++) {
+    u8g2.setColorIndex(heatingcontroller[i]->getValveDriver().getState());
+    u8g2.drawBox(1+6*i,53,4,4);
   }
   for(uint8_t i=0;i<n_valvedriver;i++) {
     u8g2.setColorIndex(valvedriver[i]->getState());

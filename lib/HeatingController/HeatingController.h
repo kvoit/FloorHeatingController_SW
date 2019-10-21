@@ -17,7 +17,8 @@ class HeatingController {
     virtual float getTemp() { return this->temp; }
     const char* getName() { return name; };
 
-    void setListener(HeatingControllerListener *l) { listener = l; };
+    void setListener(HeatingControllerListener *l);
+    ValveDriver& getValveDriver() { return vd; };
 
     protected:
     const char* name;

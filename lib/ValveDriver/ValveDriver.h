@@ -10,4 +10,5 @@ class ValveDriver {
     virtual void handle(void) {debugV("[PWMValveDriverDecorator] Handle valve controller");};
     virtual void setState(const uint8_t newstate)=0;
     virtual uint8_t getState() = 0;
+    virtual uint8_t getLevel(void) { return 0; };
 };
