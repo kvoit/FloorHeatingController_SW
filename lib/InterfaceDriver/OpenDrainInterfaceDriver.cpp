@@ -5,7 +5,7 @@ extern RemoteDebug Debug;
 
 uint8_t OpenDrainInterfaceDriver::digitalRead(void) {
     uint8_t pin_value = ::digitalRead(pin);
-    debugV("Pin value read to %d", pin_value);
+    // debugV("Pin value read to %d", pin_value);
     return pin_value;
 }
 

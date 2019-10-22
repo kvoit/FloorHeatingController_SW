@@ -6,7 +6,7 @@ extern RemoteDebug Debug;
 void HeatingController::handle() { 
     if(enabled) {
         t.handle(); 
-        debugV("[Heating controller] Handle valve controller");
+        // debugV("[Heating controller] Handle valve controller");
         vd.handle();
     } 
 }
