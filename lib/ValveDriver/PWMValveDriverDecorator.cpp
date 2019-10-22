@@ -31,13 +31,13 @@ void PWMValveDriverDecorator::handle() {
         debugD("\tState: %d",vd.getState());
         vd.setState(1);
     } else { 
-        debugV("Doing nothing");
-        debugV("\tMillis: %d",now);
-        debugV("\tlast_on: %d",last_on);
-        debugV("\tPWM peri: %d",pwm_period);
-        debugV("\tState: %d",vd.getState());
-        debugV("\tnow-last_on: %d",now-last_on);
-        debugV("\tpwm_level: %d",pwm_level);
-        debugV("\tOn period: %d",calc_peri*pwm_level/MAX_PWM_LEVEL);
+        // debugV("Doing nothing");
+        // debugV("\tMillis: %d",now);
+        // debugV("\tlast_on: %d",last_on);
+        // debugV("\tPWM peri: %d",pwm_period);
+        // debugV("\tState: %d",vd.getState());
+        // debugV("\tnow-last_on: %d",now-last_on);
+        // debugV("\tpwm_level: %d",pwm_level);
+        // debugV("\tOn period: %d",calc_peri*pwm_level/MAX_PWM_LEVEL);
     }
 }
