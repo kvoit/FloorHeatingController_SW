@@ -9,5 +9,6 @@ uint8_t ShiftyValveDriver::getState(void) {
 
 void ShiftyValveDriver::setState(const uint8_t value) {
     state = value;
+    debugD("Setting valve to %d",value);
     return shift->writeBit(pin,value);
 };

@@ -15,6 +15,7 @@
 #include <TimeFunctions.hpp>
 #include <DisplayFunctions.h>
 #include <ControllerConfig.h>
+#include <MqttHcEnabler.hpp>
 
 #include <BangBangController.h>
 #include <OnOffTheromostat.h>
@@ -109,6 +110,9 @@ void setup() {
 
   // Configure periphery drivers and heating controllers
   configControllers();
+
+  mqtt_controller.subscribe();
+  debugD("Setup done.");
 }
 
 void loop() {
@@ -120,7 +124,6 @@ void loop() {
   // Handle heat controllers
   INTERVAL(100) {
     for (uint8_t i = 0; i<n_heatcontroller; i++) {
-      debugV("main: Handling controller %d",i);
       heatcontrollers[i]->handle();
     }
   }

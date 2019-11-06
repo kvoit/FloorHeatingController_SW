@@ -7,7 +7,7 @@
 
 class MqttThermostat : public MqttListener, public Thermostat {
     public:
-    MqttThermostat(MqttController* mqtt_controller, const char* topic)
+    MqttThermostat(MqttController& mqtt_controller, const char* topic)
         : MqttListener(mqtt_controller,topic) {};
     virtual bool parsePayload(const char* payload);
     virtual float getTemp() { return temp; }

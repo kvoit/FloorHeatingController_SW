@@ -27,20 +27,20 @@ boolean beginDisplay(U8G2 &u8g2) {
 }
 
 void updateDisplay(U8G2 &u8g2, ValveDriver *valvedriver[], uint8_t n_valvedriver, HeatingController *heatingcontroller[], uint8_t n_heatingcontroller) {
-  debugV("Start display update");
+  // debugV("Start display update");
   if(!getLocalTime(&timeinfo)){
     debugE("Failed to obtain NTP time");
     return;
   }
-  debugV("Retrieved time");
+  // debugV("Retrieved time");
   char datestring[20];
   sprintf(datestring,"%04d/%02d/%02d %02d:%02d:%02d",1900+timeinfo.tm_year,timeinfo.tm_mon+1,timeinfo.tm_mday,timeinfo.tm_hour,timeinfo.tm_min,timeinfo.tm_sec);
-  debugV("Formated time");
+  // debugV("Formated time");
   u8g2.setColorIndex(0);
   u8g2.drawBox(0,11,128,10);  
   u8g2.setColorIndex(1);
   u8g2.drawStr(0,20,datestring);
-  debugV("Drew time");
+  // debugV("Drew time");
   u8g2.drawBox(0,46,128,18);
   for(uint8_t i=0;i<n_heatingcontroller;i++) {
     u8g2.setColorIndex(heatingcontroller[i]->isEnabled());
@@ -55,7 +55,7 @@ void updateDisplay(U8G2 &u8g2, ValveDriver *valvedriver[], uint8_t n_valvedriver
     u8g2.drawBox(1+6*i,59,4,4);
   }
   u8g2.setColorIndex(1);
-  debugV("Drew boxes");
+  // debugV("Drew boxes");
   u8g2.sendBuffer();
-  debugV("End display update");
+  // debugV("End display update");
 }

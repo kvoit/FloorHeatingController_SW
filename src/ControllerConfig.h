@@ -11,6 +11,7 @@
 #include <MqttJsonThermostat.hpp>
 #include <ThermostatMaxDecorator.hpp>
 #include <MqttHeatingListener.hpp>
+#include <MqttHcEnabler.hpp>
 
 #define MQTT_TOPIC_BASE "home-uk/heating/"
 

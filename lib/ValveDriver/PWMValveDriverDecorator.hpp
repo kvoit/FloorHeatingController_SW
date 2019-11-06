@@ -13,7 +13,7 @@ class PWMValveDriverDecorator : public AnalogValveDriver
     virtual void setLevel(uint8_t pwm_level) { this->pwm_level = pwm_level; };
     virtual uint8_t getLevel(void) {return pwm_level;}
 
-    virtual void setState(uint8_t state) { if(state) pwm_level=on_level; else pwm_level=off_level; };
+    virtual void setState(uint8_t state) { if(state) pwm_level=on_level; else pwm_level=off_level; this->handle(); };
     virtual uint8_t getState(void) {return pwm_level>0; }
 
     virtual void handle(void);
