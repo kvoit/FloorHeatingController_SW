@@ -49,7 +49,7 @@ bool mqtt_reconnect(PubSubClient &mqttclient, const char *device_name, const cha
 bool mqtt_check(PubSubClient &mqttclient, uint16_t mqttReconnectInterval, const char *device_name, const char *user_name, const char *mqtt_pw, const char *mqtt_topic_tree) {
     bool returnval = true;
     if (!mqttclient.connected()) {
-        INTERVAL(mqttReconnectInterval)
+        INTERVAL(mqttReconnectInterval,millis())
         {
             returnval = mqtt_reconnect(mqttclient, device_name, user_name, mqtt_pw, mqtt_topic_tree);
         }

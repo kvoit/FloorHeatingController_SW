@@ -15,7 +15,7 @@
 #include <TimeFunctions.hpp>
 #include <DisplayFunctions.h>
 #include <ControllerConfig.h>
-#include <MqttHcEnabler.hpp>
+#include <MqttControllerInterface.hpp>
 
 #include <BangBangController.h>
 #include <OnOffTheromostat.h>
@@ -101,7 +101,7 @@ void setup() {
   while(millis()<10000) {
     ArduinoOTA.handle();
     Debug.handle();
-    INTERVAL(1000) {
+    INTERVAL(1000,millis()) {
       debugI("Initial wait %lu",millis());
     }
   }
@@ -122,29 +122,42 @@ void loop() {
   mqtt_controller.handle();
   
   // Handle heat controllers
-  INTERVAL(100) {
+  INTERVAL(100,millis()) {
     for (uint8_t i = 0; i<n_heatcontroller; i++) {
       heatcontrollers[i]->handle();
     }
   }
 
   //Read interfaces and print status to display
-  INTERVAL(1000) {
+  INTERVAL(1000,millis()) {
     if(display) {
       updateDisplay(u8g2,valvedriver,N_OUTPUTPORT,heatcontrollers,n_heatcontroller);
     }
   }
 
   // Flash LED
-  INTERVAL(1000) {
+  INTERVAL(1000,millis()) {
     digitalWrite(LED_PIN,!digitalRead(LED_PIN));
   }
 
-  INTERVAL(60000) {
+  INTERVAL(60000,millis()) {
     printLocalTime();
+
+    for (uint8_t i = 0; i<n_heatcontroller; i++) {
+      debugI("Controller %d (%d - %d): %.2f C (%.2f C)",i,heatcontrollers[i]->isEnabled(),heatcontrollers[i]->getValveDriver().getState(),heatcontrollers[i]->getThermTemp(),heatcontrollers[i]->getTemp());
+    }
+
+    for(uint8_t i=0;i<N_INTERFACE;i++) {
+      debugI("Thermostate %d: %.2f C",i,thermostate[i]->getTemp());
+    }
   }
 
-  INTERVAL(24*3600000) {
+  INTERVAL(24*3600000,millis()) {
     updateNTP(gmtOffset_sec, dlsOffset_sec, ntpserver);
+  }
+
+  INTERVAL(60000,millis()) {
+    if(WiFi.status() != WL_CONNECTED)
+      WiFi.reconnect();
   }
 }

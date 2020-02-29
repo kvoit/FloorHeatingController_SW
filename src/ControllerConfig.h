@@ -10,8 +10,7 @@
 #include <MqttThermostat.hpp>
 #include <MqttJsonThermostat.hpp>
 #include <ThermostatMaxDecorator.hpp>
-#include <MqttHeatingListener.hpp>
-#include <MqttHcEnabler.hpp>
+#include <MqttControllerInterface.hpp>
 
 #define MQTT_TOPIC_BASE "home-uk/heating/"
 

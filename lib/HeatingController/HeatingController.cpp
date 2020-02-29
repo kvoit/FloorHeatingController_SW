@@ -23,6 +23,14 @@ void HeatingController::setEnabled(boolean enabled) {
     }
 }
 
+void HeatingController::setTemp(float temp) { 
+    this->temp = temp; 
+
+    if(listener!=0) {
+        listener->setTemp(temp);
+    }
+}
+
 void HeatingController::setListener(HeatingControllerListener *l) {
     listener = l; 
 

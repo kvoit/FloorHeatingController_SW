@@ -8,13 +8,15 @@
 class HeatingController {
     public:
     HeatingController(const char* name, ValveDriver &vd, Thermostat &t, float temp)
-        : name(name), vd(vd), t(t), temp(temp) {
+        : name(name), vd(vd), t(t) {
+            this->setTemp(temp);
     }
     virtual void handle();
     virtual void setEnabled(boolean enabled);
     virtual boolean isEnabled(void) { return this->enabled; }
-    virtual void setTemp(float temp) { this->temp = temp; }
+    virtual void setTemp(float temp);
     virtual float getTemp() { return this->temp; }
+    virtual float getThermTemp() { return t.getTemp(); }
     const char* getName() { return name; };
 
     void setListener(HeatingControllerListener *l);
