@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Arduino.h>
-#include <ValveDriver.h>
+#include <AnalogValveDriver.hpp>
 #include <Thermostat.h>
 #include <HeatingControllerListener.hpp>
 
 class HeatingController {
     public:
-    HeatingController(const char* name, ValveDriver &vd, Thermostat &t, float temp)
+    HeatingController(const char* name, AnalogValveDriver &vd, Thermostat &t, float temp)
         : name(name), vd(vd), t(t) {
             this->setTemp(temp);
     }
@@ -20,11 +20,11 @@ class HeatingController {
     const char* getName() { return name; };
 
     void setListener(HeatingControllerListener *l);
-    ValveDriver& getValveDriver() { return vd; };
+    AnalogValveDriver& getValveDriver() { return vd; };
 
     protected:
     const char* name;
-    ValveDriver& vd;
+    AnalogValveDriver& vd;
     Thermostat& t;
     float temp;
     boolean enabled = true;

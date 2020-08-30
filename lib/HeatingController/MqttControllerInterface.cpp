@@ -50,14 +50,20 @@ bool MqttControllerInterface::parsePayload(const char *payload) {
     }
     else
     {
-        if(strlen(payload)<6) //Cannot contain TEMP command
+        debugD("%s received command '%s'",hc.getName(),payload);
+        if(strlen(payload)<6) //Cannot contain any command
             return false;
-        if(strstr(payload, "TEMP") == NULL)
-            return false;
-
-        float set_temp = atof(&payload[4]);
-        debugD("Setting %s temp to %.2f",hc.getName(),set_temp);
-        hc.setTemp(set_temp);
+        if(strstr(payload, "TEMP") != NULL) {
+            float set_temp = atof(&payload[4]);
+            debugD("Setting %s temp to %.2f",hc.getName(),set_temp);
+            hc.setTemp(set_temp);
+            return true;
+        } else if (strstr(payload, "VLEVEL") != NULL) {
+            uint8_t set_level = atoi(&payload[6]);
+            debugD("Setting %s valve level to %d",hc.getName(),set_level);
+            hc.getValveDriver().setLevel(set_level);
+            return true;
+        }
     }
     return false;
 }

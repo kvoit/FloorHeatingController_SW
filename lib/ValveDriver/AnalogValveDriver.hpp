@@ -1,3 +1,5 @@
+#pragma once
+
 #include<ValveDriver.h>
 
 class AnalogValveDriver : public ValveDriver
