@@ -4,29 +4,34 @@ extern ValveDriver       *valvedriver[];
 extern InterfaceDriver   *interfacedriver[];
 extern Thermostat        *thermostate[];
 extern HeatingController *heatcontrollers[];
-extern Shifty shifty;
-extern MqttController mqtt_controller;
+extern Shifty             shifty;
+extern MqttController     mqtt_controller;
+extern uint8_t            n_heatcontroller;
 
-extern uint8_t n_heatcontroller;
+#include <RemoteDebug.h>
+extern RemoteDebug Debug;
 
 void configControllers() {
+    TimeControllerCommand *com;
+    TimerControllerInterface *tci;
+
     /* INTERFACES 
         0   Bath
-        1   Kid
-        2   Livingroom
+        1   Child
+        2   Living
         3   Office
         4   Bedroom
         5   Shower
     */
 
     /* OUTPUTS   
-        0   Kid
+        0   Child
         1   Office
-        2   Dining room
-        3   Living room
-        4   Corridor
-        5   Guests
-        6   Bed room
+        2   Dining
+        3   Hall
+        4   Living
+        5   Guest/Work
+        6   Schlafzimmer
         7   Shower
         8   Bath
     */
@@ -44,21 +49,141 @@ void configControllers() {
         valvedriver[i]     = new ShiftyValveDriver(&shifty,OUTPUTPORT[i]);
     }
     
-    heatcontrollers[n_heatcontroller++] = new BangBangController("1", *new PWMValveDriverDecorator(*valvedriver[0],900000,128),*thermostate[1],20); // Kid
-    heatcontrollers[n_heatcontroller++] = new BangBangController("2", *new PWMValveDriverDecorator(*valvedriver[1],900000,128),*thermostate[3],20); // Office
-    heatcontrollers[n_heatcontroller++] = new BangBangController("3", *new PWMValveDriverDecorator(*valvedriver[2],900000,128),*thermostate[2],20); // Bedroom
-    heatcontrollers[n_heatcontroller++] = new BangBangController("4", *new PWMValveDriverDecorator(*valvedriver[3],900000,128),*thermostate[2],20); // Living room
-    heatcontrollers[n_heatcontroller++] = new BangBangController("5", *new PWMValveDriverDecorator(*valvedriver[4],900000,128),*thermostate[2],20); // Corridor
-     heatcontrollers[n_heatcontroller++] = new BangBangController("6",                                                                           // Guest
-        *new PWMValveDriverDecorator(valvedriver[5],900000,128),                                                                         // PWM the valve to half the duty cycle
-        *new TheromostatMaxDecorator<30>(new MqttThermostat(&mqtt_controller,"home-uk/guestroom/thermostat/temp"), 120000),              // Take the max of the last 30 values taken every 2 minutes, to avoid increased heating during short ventilation
-        19);
-    heatcontrollers[n_heatcontroller++] = new BangBangController("7",                                                                            // Bedroom
-        *new PWMValveDriverDecorator(valvedriver[6],900000,128),                    
-        *new TheromostatMaxDecorator<30>(new MqttJsonThermostat(&mqtt_controller,"home-uk/zigbee2mqtt/UK_WE2_Bedroom_AqaraTemperature"), 120000),
-        19);
-    heatcontrollers[n_heatcontroller++] = new BangBangController("8", *new PWMValveDriverDecorator(*valvedriver[7],900000,128),*thermostate[5],20); // Shower
-    heatcontrollers[n_heatcontroller++] = new BangBangController("9", *new PWMValveDriverDecorator(*valvedriver[8],900000,128),*thermostate[0],20); // Bath
+    debugD("Configuring controllers");
 
+    // Child
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("child", 
+        *new PWMValveDriverDecorator(*valvedriver[0],3600000,127), 
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/Childroom/thermostat/temp"), 1800000),
+        19.5, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    //Office
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("office",
+        *new PWMValveDriverDecorator(*valvedriver[1],1800000,127),                    
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/office/thermostat/temp"), 1800000),
+        20, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    // Dining
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("dining",
+        *new PWMValveDriverDecorator(*valvedriver[2],3600000,127,0,0,1800000),
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/livingroom/thermostat/temp"), 1800000),
+        20.5, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    // Hall
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("hall",
+        *new PWMValveDriverDecorator(*valvedriver[3],1800000,127),                    
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/livingroom/thermostat/temp"), 1800000),
+        20.5, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    // Living
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("living",
+        *new PWMValveDriverDecorator(*valvedriver[4],3600000,127,0,0,1800000),
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/livingroom/thermostat/temp"), 1800000),
+        20.5, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    // Guest/Work
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("guest",
+        *new PWMValveDriverDecorator(*valvedriver[5],3600000,127,0,0,1800000),                    
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/guestroom/thermostat/temp"), 1800000), 
+        19.5, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+
+    // Day setting Guest/Work
+    tci = new TimerControllerInterface(*heatcontrollers[n_heatcontroller-1]);
+    com = new TimeControllerCommand;
+    com->dow = -1;
+    com->hour = 4;
+    com->minute = 00;
+    com->do_temp = true;
+    com->temp = 21.0;
+    com->do_valve_level = true;
+    com->valve_level = 255;
+    tci->add(com);
+    com = new TimeControllerCommand;
+    com->dow = -1;
+    com->hour = 17;
+    com->minute = 00;
+    com->do_temp = true;
+    com->temp = 19.5;
+    com->do_valve_level = true;
+    com->valve_level = 128;
+    tci->add(com);
+
+    
+    // Bedroom
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("bedroom",
+        *new PWMValveDriverDecorator(*valvedriver[6],3600000,95,15),                    
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/bedroom/thermostat/temp"), 1800000), 
+        18.5, 0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    // Shower
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("shower", 
+        *new PWMValveDriverDecorator(*valvedriver[7],1800000,127),
+        *thermostate[5],
+        20); 
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+    
+
+    // Bath
+    n_heatcontroller++;
+    heatcontrollers[n_heatcontroller-1] = new BangBangController("bath",
+        *new PWMValveDriverDecorator(*valvedriver[8],3600000,254),                    
+        *new TheromostatMaxDecorator<30>(new MqttThermostat(mqtt_controller,"home-uk/bathroom/thermostat/temp"), 1800000), 
+        20.0,0.0);
+
+    new MqttControllerInterface(mqtt_controller,MQTT_TOPIC_BASE,*heatcontrollers[n_heatcontroller-1]);
+
+    // Morning Bath
+    tci = new TimerControllerInterface(*heatcontrollers[n_heatcontroller-1]);
+    com = new TimeControllerCommand;
+    com->dow = -1;
+    com->hour = 23;
+    com->minute = 0;
+    com->do_temp = true;
+    com->temp = 22.0;
+    com->do_valve_level = true;
+    com->valve_level = 255;
+    tci->add(com);
+    com = new TimeControllerCommand;
+    com->dow = -1;
+    com->hour = 7;
+    com->minute = 0;
+    com->do_temp = true;
+    com->temp = 20;
+    com->do_valve_level = true;
+    com->valve_level = 128;
+    tci->add(com);
+
+    // for(uint8_t i = 0; i<n_heatcontroller; i++) {
+    //     heatcontrollers[n_heatcontroller-1]->setEnabled(false);
+    // }
     return;
 }
