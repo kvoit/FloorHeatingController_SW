@@ -2,6 +2,7 @@
 
 #include <RemoteDebug.h>
 extern RemoteDebug Debug;
+extern tm starttime;
 
 boolean beginDisplay(U8G2 &u8g2) {
   // Display starting info, break with blink code if LCD cannot be started
@@ -40,6 +41,7 @@ void updateDisplay(U8G2 &u8g2, ValveDriver *valvedriver[], uint8_t n_valvedriver
   u8g2.drawBox(0,11,128,10);  
   u8g2.setColorIndex(1);
   u8g2.drawStr(0,20,datestring);
+  
   // debugV("Drew time");
   u8g2.drawBox(0,46,128,18);
   for(uint8_t i=0;i<n_heatingcontroller;i++) {

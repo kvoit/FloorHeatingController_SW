@@ -6,6 +6,6 @@ extern RemoteDebug Debug;
 
 bool MqttThermostat::parsePayload(const char *payload) {
     temp = atof(payload);
-    debugD("Setting temp to %f",temp);
+    debugD("Setting temp to %f from %s",temp,this->getMQTTTopic());
     return false;
 }

@@ -19,6 +19,9 @@ boolean startNetwork(const char* ssid,const char* password,const char* device_na
         return false;
     }
 
+    WiFi.setAutoReconnect(true);
+    WiFi.persistent(true);
+
     if (MDNS.begin(device_name)) {
         Serial.print("* MDNS responder started. Hostname -> ");
         Serial.println(device_name);

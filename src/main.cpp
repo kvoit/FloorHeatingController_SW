@@ -9,7 +9,6 @@
 
 #include <NetworkFunctions.h>
 #include <OTAFunctions.h>
-#include <MqttFunctions.h>
 #include <MqttController.hpp>
 #include <RemoteDebugFunctions.h>
 #include <TimeFunctions.hpp>
@@ -39,6 +38,7 @@ InterfaceDriver   *interfacedriver[N_INTERFACE];
 Thermostat        *thermostate[N_INTERFACE];
 HeatingController *heatcontrollers[N_OUTPUTPORT];
 uint8_t n_heatcontroller = 0;
+tm starttime;
 
 boolean display = true;
 
@@ -49,6 +49,8 @@ void mqtt_callback_func(const char* topic, const byte* payload, unsigned int len
 void setup() {
   Serial.begin(115200);
   Serial.println("Booting");
+
+  getLocalTime(&starttime);
 
   pinMode(LED_PIN,OUTPUT);
   digitalWrite(LED_PIN,HIGH);
@@ -87,10 +89,10 @@ void setup() {
     u8g2.drawStr(50,10,WiFi.localIP().toString().c_str());
     u8g2.sendBuffer();
   }
-
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  
   pubsubclient.setCallback(mqtt_callback_func);
 
   // Start network services
@@ -109,10 +111,20 @@ void setup() {
   updateNTP(gmtOffset_sec, dlsOffset_sec, ntpserver);
 
   // Configure periphery drivers and heating controllers
+  debugD("Configureing controllers ...");
   configControllers();
+  debugD("Done configureing controllers ...");
 
   mqtt_controller.subscribe();
   debugD("Setup done.");
+
+  char datestring[20];
+  if(!getLocalTime(&timeinfo)){
+    debugE("Failed to obtain NTP time");
+  }
+  sprintf(datestring,"%04d/%02d/%02d %02d:%02d:%02d",1900+starttime.tm_year,starttime.tm_mon+1,starttime.tm_mday,starttime.tm_hour,starttime.tm_min,starttime.tm_sec);
+  u8g2.setColorIndex(1);
+  u8g2.drawStr(0,30,datestring);
 }
 
 void loop() {
@@ -124,7 +136,9 @@ void loop() {
   // Handle heat controllers
   INTERVAL(100,millis()) {
     for (uint8_t i = 0; i<n_heatcontroller; i++) {
+      // debugD("Level %s before handle %d",heatcontrollers[i]->getName(),heatcontrollers[i]->getValveDriver().getLevel());
       heatcontrollers[i]->handle();
+      // debugD("Level %s after handle %d",heatcontrollers[i]->getName(),heatcontrollers[i]->getValveDriver().getLevel());
     }
   }
 
@@ -140,11 +154,11 @@ void loop() {
     digitalWrite(LED_PIN,!digitalRead(LED_PIN));
   }
 
-  INTERVAL(60000,millis()) {
+  INTERVAL(30000,millis()) {
     printLocalTime();
 
     for (uint8_t i = 0; i<n_heatcontroller; i++) {
-      debugI("Controller %d (%d - %d): %.2f C (%.2f C)",i,heatcontrollers[i]->isEnabled(),heatcontrollers[i]->getValveDriver().getState(),heatcontrollers[i]->getThermTemp(),heatcontrollers[i]->getTemp());
+      debugI("Controller %d (%d - %d - %d): %.2f C (%.2f C) - %s",i,heatcontrollers[i]->isEnabled(),heatcontrollers[i]->getValveDriver().getState(),heatcontrollers[i]->getValveDriver().getLevel(),heatcontrollers[i]->getThermTemp(),heatcontrollers[i]->getTemp(),heatcontrollers[i]->getName());
     }
 
     for(uint8_t i=0;i<N_INTERFACE;i++) {

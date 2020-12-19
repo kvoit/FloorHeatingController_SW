@@ -13,6 +13,6 @@ class ShiftyValveDriver : public ValveDriver {
 
     protected:
     Shifty* shift;
-    uint8_t pin;
-    uint8_t state;
+    const uint8_t pin;
+    volatile uint8_t state;
 };

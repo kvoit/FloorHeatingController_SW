@@ -3,8 +3,12 @@
 
 class HeatingControllerListener {
     public:
-    virtual void setEnabled(bool status) = 0;
-    virtual void setValveState(bool status) = 0;
-    virtual void setValveLevel(uint8_t level) = 0;
-    virtual void setTemp(float temp) = 0;
+    virtual void setEnabled(bool status, boolean persist = true) {};
+    virtual void setValveState(bool status, boolean persist = true) {};
+    virtual void setValveLevel(uint8_t level, boolean persist = true) {};
+    virtual void setTemp(float temp, boolean persist = true) {};
+
+    virtual void handle(void) {};
+
+    // We do not declare a heating controller here, since we might want to use a child class
 };
