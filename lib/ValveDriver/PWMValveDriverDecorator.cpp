@@ -52,8 +52,29 @@ void PWMValveDriverDecorator::handle() {
     }
 }
 
-void PWMValveDriverDecorator::setLevel(uint8_t pwm_level)
+void PWMValveDriverDecorator::setLevel(uint8_t pwmlevel)
 {
-    debugD("Setting valve level from %d to %d",this->pwm_level, pwm_level);
-    this->pwm_level = pwm_level; 
+    debugD("Setting valve level from %d to %d (on: %d, off: %d)",this->pwm_level, pwmlevel, this->on_level, this->off_level);
+    this->pwm_level = pwmlevel; 
 };
+
+uint8_t PWMValveDriverDecorator::getLevel(void) 
+{
+    return pwm_level;
+}
+
+void PWMValveDriverDecorator::setOnLevel(uint8_t onlevel)   
+{ 
+    debugD("Configuring on level %d (before on: %d, off: %d)",onlevel, this->on_level, this->off_level);
+    bool state = this->getState(); 
+    this->on_level=onlevel; 
+    this->setState(state); 
+}
+
+void PWMValveDriverDecorator::setOffLevel(uint8_t offlevel) 
+{ 
+    debugD("Configuring off level %d (before on: %d, off: %d)",offlevel, this->on_level, this->off_level);
+    bool state = this->getState(); 
+    this->off_level=offlevel;
+    this->setState(state); 
+}
