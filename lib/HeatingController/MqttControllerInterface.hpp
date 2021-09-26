@@ -5,6 +5,7 @@
 #include<HeatingController.h>
 #include<MqttListener.hpp>
 #include<MqttController.hpp>
+#include<INTERVAL.h>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ class MqttControllerInterface : public MqttListener, public HeatingControllerLis
     virtual void setValveLevel(uint8_t level, boolean settopic = true);
     virtual void setTemp(float temp, boolean settopic = true);
     virtual bool presentMessage(const char *topic,const char *payload);
+    virtual void handle(void);
 
     protected:
     HeatingController& hc;

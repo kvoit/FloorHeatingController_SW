@@ -3,6 +3,12 @@
 #include <RemoteDebug.h>
 extern RemoteDebug Debug;
 
+void MqttControllerInterface::handle() {
+    INTERVAL(600000,millis()) {
+        this->setEnabled(this->hc.isEnabled());
+    }
+}
+
 void MqttControllerInterface::setEnabled(bool status, boolean settopic) {
     char buffer[64];
     strncpy(buffer,topic,(63<baselength)?63:baselength);
