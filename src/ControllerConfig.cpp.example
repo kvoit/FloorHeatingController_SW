@@ -182,8 +182,5 @@ void configControllers() {
     com->valve_level = 128;
     tci->add(com);
 
-    // for(uint8_t i = 0; i<n_heatcontroller; i++) {
-    //     heatcontrollers[n_heatcontroller-1]->setEnabled(false);
-    // }
     return;
 }

@@ -12,12 +12,15 @@ void TimerControllerInterface::handle() {
     if(c->run==false && (c->dow==timeinfo.tm_wday || c->dow==-1) && c->hour==timeinfo.tm_hour && c->minute==timeinfo.tm_min) {
       c->run=true;
       if(c->do_enable) {
+          debugD("Timer: Setting enable status to %d",c->enable);
           hc.setEnabled(c->enable);
       }
       if(c->do_temp) {
+          debugD("Timer: Setting temp to %d",c->temp);
           hc.setTemp(c->temp);
       }
       if(c->do_valve_level) {
+          debugD("Timer: Setting level to %d",c->valve_level);
           hc.getValveDriver().setOnLevel(c->valve_level);
       }
     } else if(c->run==true && ((c->dow!=timeinfo.tm_wday && c->dow!=-1) || c->hour!=timeinfo.tm_hour || c->minute!=timeinfo.tm_min)) {        

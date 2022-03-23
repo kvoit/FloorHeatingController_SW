@@ -17,13 +17,14 @@ void HeatingController::handle() {
 
 void HeatingController::setEnabled(boolean enabled) { 
     if (this->enabled != enabled) {
-        debugD("Setting heating controller status to %d",enabled);
-        vd.setState(0);
+        debugI("Setting heating controller status to %d",enabled);
 
+        vd.setState(0); // If switching on, handle will reenable the valve is necessary
         this->enabled = enabled; 
 
         for (HeatingControllerListener* hcl : listener)
         {
+            hcl->setValveState(false);
             hcl->setEnabled(enabled);
         }
     }

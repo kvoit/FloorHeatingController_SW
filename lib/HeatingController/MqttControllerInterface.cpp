@@ -4,7 +4,7 @@
 extern RemoteDebug Debug;
 
 void MqttControllerInterface::handle() {
-    INTERVAL(600000,millis()) {
+    INTERVAL(600000,millis()) { // Occationally update MQTT status
         this->setEnabled(this->hc.isEnabled());
     }
 }
@@ -16,7 +16,7 @@ void MqttControllerInterface::setEnabled(bool status, boolean settopic) {
 
     strncat(buffer,"/enabled",64);
     mqtt_controller.sendMessage(buffer,status?"1":"0");
-
+    debugD("Setting Enable status to %i (%s)",status,topic);
     if(settopic) {
         strncat(buffer,"/set",64);
         mqtt_controller.sendMessage(buffer,status?"1":"0");
@@ -81,11 +81,11 @@ bool MqttControllerInterface::presentMessage(const char *topic,const char *paylo
             return true;
         } else if(!strcmp(&topic[baselength],"/enabled/set")) {
             if ( !strcmp(payload, "1") ) {
-                debugI("Enabling %s",hc.getName());
+                debugI("Enabling %s (%s)",hc.getName(),topic);
                 hc.setEnabled(1);
                 return true;
             } else if ( !strcmp(payload, "0") ) {
-                debugI("Disabling %s",hc.getName());
+                debugI("Disabling %s (%s)",hc.getName(),topic);
                 hc.setEnabled(0);
                 return true;
             }
