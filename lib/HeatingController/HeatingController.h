@@ -4,6 +4,7 @@
 #include <AnalogValveDriver.hpp>
 #include <Thermostat.h>
 #include <HeatingControllerListener.hpp>
+#include <vector>
 
 class HeatingController {
     public:
